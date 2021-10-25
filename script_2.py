@@ -2,6 +2,7 @@ from sklearn.datasets import make_classification
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import numpy as np
+from dirty_dancing import ip_stream_generator
 
 # Parameters
 n_chunks = 200
@@ -14,8 +15,6 @@ interpolation = 'nearest'
 interpolation = 'cubic'
 random_state = 1410
 
-np.random.seed(random_state)
-
 # Prepare base stream
 n_samples = n_chunks * chunk_size
 sconfig = {
@@ -25,35 +24,11 @@ sconfig = {
 }
 X, y = make_classification(**sconfig)
 
-# Prepare projections
-drift_basepoints = np.linspace(0, n_samples, n_drifts+1).astype(int)
-stream_basepoints = np.linspace(0, n_samples-1, n_samples).astype(int)
-base_projections = np.random.normal(size=(len(drift_basepoints),
-                                          concept_features,
-                                          stream_features
-                                          ))
-#print(base_projections, base_projections.shape)
-#normalizer = np.sum(base_projections, axis=(1))
-#print(normalizer, normalizer.shape)
-
-#base_projections *= normalizer[:, np.newaxis, :]
-
-# Prepare continous projections
-continous_projections = np.zeros((n_samples, concept_features, stream_features))
-for d_s in range(stream_features):
-    for d_c in range(concept_features):
-        original_values = base_projections[:, d_c, d_s]
-        f = interp1d(drift_basepoints, original_values, kind=interpolation)
-        continous_projections[:, d_c, d_s] = f(stream_basepoints)
-
 # Make projection
-X_s = np.sum(X[:, :, np.newaxis] * continous_projections, axis=1)
-
-print('X', X.shape)
-print('drift_basepoints', drift_basepoints)
-print('base_projections', base_projections.shape)
-print('continous_projections', continous_projections.shape)
-print('X_s', X_s.shape)
+X_s, y = ip_stream_generator(X, y,
+                             n_drifts=n_drifts,
+                             interpolation=interpolation,
+                             random_state=random_state)
 
 """
 Figure
@@ -66,16 +41,16 @@ for chunk_id in range(n_chunks):
     colors = ['blue', 'red']
     for d_s in range(stream_features):
         ax = plt.subplot(211)
-        for d_c in range(concept_features):
-            ax.scatter(drift_basepoints,
-                       base_projections[:,d_c,d_s],
-                       c=colors[d_s])
-            ax.plot(drift_basepoints,
-                    base_projections[:, d_c,d_s],
-                    c=colors[d_s], ls=":")
-            ax.plot(stream_basepoints,
-                    continous_projections[:, d_c,d_s],
-                    c=colors[d_s], ls="-")
+        #for d_c in range(concept_features):
+            #ax.scatter(drift_basepoints,
+            #           base_projections[:,d_c,d_s],
+            #           c=colors[d_s])
+            #ax.plot(drift_basepoints,
+            #        base_projections[:, d_c,d_s],
+            #        c=colors[d_s], ls=":")
+            #ax.plot(stream_basepoints,
+            #        continous_projections[:, d_c,d_s],
+            #        c=colors[d_s], ls="-")
 
         ax.set_ylim(-3,3)
         ax.grid(ls=":")
