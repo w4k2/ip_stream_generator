@@ -8,10 +8,10 @@ import matplotlib.pyplot as plt
 n_chunks = 200
 chunk_size = 500
 
-stream = sl.streams.NPYParser('streams/str_shuttle-c2-vs-c4.csv_nearest_21629.npy',
+stream = sl.streams.NPYParser('streams/stream_wine_cubic_98549.npy',
                     n_chunks=n_chunks, chunk_size=chunk_size)
 
-clf = MLPClassifier(hidden_layer_sizes=(20))
+clf = GaussianNB()#MLPClassifier(hidden_layer_sizes=(20))
 
 scores= []
 
