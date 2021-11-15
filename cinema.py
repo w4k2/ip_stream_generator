@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.random.mtrand import sample
 from generator import ip_stream_generator
 import os
 
@@ -14,7 +13,7 @@ directory = 'datasets'
 n_features = 8
 chunk_n = 200
 samples = chunk_n * 250
-drifts_n = 10
+drifts_n = 5
 d_types = ['nearest','cubic']
 
 files = os.listdir(directory)
@@ -34,7 +33,7 @@ for f in files:
         _X_s, _y = ip_stream_generator(X, y, 
                         total_samples=samples, 
                         stream_features=n_features, 
-                        random_state=91872, 
+                        random_state=13, 
                         n_drifts=drifts_n, 
                         interpolation=d)
     

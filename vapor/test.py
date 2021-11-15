@@ -15,6 +15,3 @@ X_s, y = ip_stream_generator(X, y_,
 
 ds = np.concatenate((X_s, y[:, np.newaxis]), axis=1)
 np.save('stream', ds)
-
-                
-
