@@ -42,7 +42,7 @@ for i in range(1,chunk_number):
 both_c = np.concatenate((np.array(mean_chunk0_c), np.array(mean_chunk1_c)))
 both_n = np.concatenate((np.array(mean_chunk0_n), np.array(mean_chunk1_n)))
 
-fig, ax = plt.subplots(1, 2, figsize=(12,5), sharex=True, sharey=True)
+fig, ax = plt.subplots(1, 2, figsize=(12,4), sharex=True, sharey=True)
 
 ax[0].plot(np.arange(i) ,mean_chunk0_c, label = 'feature A', color='tomato')
 ax[0].plot(np.arange(i) ,mean_chunk1_c, label = 'feature B', color='cornflowerblue')
