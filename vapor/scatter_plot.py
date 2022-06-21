@@ -1,6 +1,7 @@
 import numpy as np
 from generator import ip_stream_generator
 import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
 
 def get_drifts(chunk_num, n_drifts):
     interval = chunk_num/n_drifts
@@ -14,6 +15,9 @@ n_drfs = 8
 ds = np.genfromtxt("datasets/wisconsin.csv", delimiter=",")
 X = ds[:, :-1]
 y_ = ds[:, -1].astype(int)
+
+# X, y_ = make_classification(n_classes=4, n_informative=2, n_features=2, n_redundant=0, n_samples=5000,
+#             n_clusters_per_class=1, weights=[0.25,0.25,0.45,0.05])
 
 X_s_cubic, y = ip_stream_generator(X, y_, total_samples=50000, stream_features=2, random_state=12783, n_drifts=n_drfs, interpolation='cubic')
 
@@ -34,7 +38,9 @@ ax = ax.ravel()
 for i, bp in enumerate(basepoints):
     chunk = X_s_cubic[(bp-1)*chunk_size:bp*chunk_size]
     chunk_y = y[(bp-1)*chunk_size:bp*chunk_size]
-    ax[i].scatter(chunk[:,0], chunk[:,1], c=['tomato' if chunk_y[i]==0 else 'cornflowerblue' for i in range(len(chunk_y))])
+    # ax[i].scatter(chunk[:,0], chunk[:,1], c=['tomato' if chunk_y[i]==0 else 'cornflowerblue' for i in range(len(chunk_y))])
+    ax[i].scatter(chunk[:,0], chunk[:,1], c=chunk_y)
+
     ax[i].set_title('chunk %i' % bp)
     ax[i].set_ylabel('feature A value')
     ax[i].set_xlabel('feature B value')

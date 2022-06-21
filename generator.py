@@ -7,21 +7,27 @@ def ip_stream_generator(X, y,
                         n_drifts = 3,
                         interpolation = 'nearest',
                         stabilize_factor = 0.15,
-                        random_state = None):
+                        random_state = None,
+                        binarize = True):
     np.random.seed(random_state)
 
-    y[y!=0] = 1
+    if binarize:
+        y[y!=0] = 1
 
-    imbalance = len(np.argwhere(y==0))/len(y)
+    classes = np.unique(y)
+    class_indexes =[]
 
-    samples0 = int(imbalance*total_samples)
-    indexes0 = np.random.choice(np.argwhere(y==0).flatten(), samples0)
+    for c in classes:
+        ir = len(np.argwhere(y==c))/len(y)
+        samples = int(ir*total_samples)
+        indexes = np.random.choice(np.argwhere(y==c).flatten(), samples)
+        class_indexes.append(indexes)
 
-    samples1 = int(total_samples-samples0)
-    indexes1 = np.random.choice(np.argwhere(y==1).flatten(), samples1)
+    X_arrs = [X[ind] for ind in class_indexes]
+    y_arrs = [y[ind] for ind in class_indexes]
 
-    X = np.concatenate((X[indexes0], X[indexes1]))
-    y = np.concatenate((y[indexes0], y[indexes1]))
+    X = np.concatenate((X_arrs))
+    y = np.concatenate((y_arrs))
 
     p = np.random.permutation(len(y))
 
