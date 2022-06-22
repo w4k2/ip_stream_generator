@@ -27,5 +27,5 @@ ds = np.concatenate((X_s, y[:, np.newaxis]), axis=1)
 np.save('stream', ds)
 ```
 
-![](foo.png)
+![](figures/means.png)
 
