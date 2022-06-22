@@ -58,6 +58,8 @@ for i in range(chunk_number):
     ax[0].set_xlim(global_xmin, global_xmax)
     ax[0].set_xlabel('feature A value')
     ax[0].set_ylabel('feature B value')
+    ax[0].spines.top.set_visible(False)
+    ax[0].spines.right.set_visible(False)
     
     
     ax[1].plot(np.arange(chunk_number-1) ,mean_chunk0_c, label = 'feature A', color='tomato')
@@ -70,6 +72,8 @@ for i in range(chunk_number):
     ax[1].set_ylim(ymin_plot, ymax_plot)
     ax[1].set_xlim(0, chunk_number)
     ax[1].legend()
+    ax[1].spines.top.set_visible(False)
+    ax[1].spines.right.set_visible(False)
 
     plt.tight_layout()
     time.sleep(1/24)
