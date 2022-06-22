@@ -68,4 +68,6 @@ for i in range(2):
 plt.tight_layout()
 plt.savefig('foo.png')
 plt.savefig('figures/means.eps')
+plt.savefig('figures/means.png')
+
 
