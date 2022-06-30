@@ -13,11 +13,11 @@ def get_drifts(chunk_num, n_drifts):
 
 n_drfs = 4
 
-ds = np.genfromtxt("datasets/wisconsin.csv", delimiter=",")
+ds = np.genfromtxt("datasets/banknote.csv", delimiter=",")
 X = ds[:, :-1]
 y_ = ds[:, -1].astype(int)
 
-X_s_cubic, y = ip_stream_generator(X, y_, total_samples=50000, stream_features=2, random_state=1209388, n_drifts=n_drfs, interpolation='cubic')
+X_s_cubic, y = ip_stream_generator(X, y_, total_samples=50000, stream_features=2, random_state=456, n_drifts=n_drfs, interpolation='cubic')
 
 chunk_size = 250
 chunk_number = int(X_s_cubic.shape[0]/chunk_size)
@@ -78,6 +78,6 @@ for i in range(chunk_number):
     plt.tight_layout()
     time.sleep(1/24)
     plt.savefig("foo.png")
-    plt.savefig("temp/%i.png" % i)
+    plt.savefig("temp2/%i.png" % i)
 
 
