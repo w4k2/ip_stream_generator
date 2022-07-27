@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.interpolate import interp1d
-    
+import problexity as px
+from scipy.spatial.distance import euclidean
+
 def ip_stream_generator2(X, y,
                         n_chunks=200,
                         chunk_size=250,
@@ -10,9 +12,14 @@ def ip_stream_generator2(X, y,
                         stabilize_factor = 0.15,
                         random_state = None,
                         binarize = True,
-                        density = 155):
+                        density = 155,
+                        base_projection_pool_size=100,
+                        eval_measures=[px.f1, px.n2]):
     np.random.seed(random_state)
     total_samples = n_chunks*chunk_size
+
+    X_base = np.copy(X)
+    y_base = np.copy(y)
 
     if binarize:
         y[y!=0] = 1
@@ -59,18 +66,25 @@ def ip_stream_generator2(X, y,
         prev = bp
 
     stream_basepoints = np.linspace(0, n_samples-1, n_samples).astype(int)
-    base_projections = np.random.normal(size=(len(drift_basepoints), 
+    base_projection_pool = np.random.normal(size=(base_projection_pool_size,
                                               concept_features,
                                               stream_features
                                               ))
 
-    # print(base_projections.shape)
-    # for d_s in range(stream_features): 
-    #     for d_c in range(concept_features): 
-    #         original_values = base_projections[:, d_c, d_s]
-            
-    #         print(original_values.shape)
-    # exit()
+    base = [m(X_base, y_base) for m in eval_measures]
+    projection_scores = []
+    for bp in base_projection_pool:
+        X_temp = np.sum(X_base[:, :, np.newaxis] * bp, axis=1)
+
+        projection_scores.append([m(X_temp, y_base) for m in eval_measures])
+    
+    dist = [euclidean(projection_scores[i], base) for i in range(base_projection_pool_size)]
+    proba = -np.array(dist)
+    proba -= np.min(proba)
+    proba /=np.sum(proba)
+
+    base_projections_idx = np.random.choice(range(base_projection_pool_size), p=proba, replace=False, size=n_drifts+1)
+    base_projections = base_projection_pool[base_projections_idx]
                         
     _drift_basepoints = []
     _base_projections = []
