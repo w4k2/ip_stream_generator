@@ -54,16 +54,12 @@ def ip_stream_generator2(X, y,
 
     drfs=[]
     distances=[]
-    prev = None
-    for bp in drift_basepoints:
-        if prev == None:
-            prev = bp
-            continue
 
-        drfs.append(int(prev+(bp-prev)/2))
-        distances.append(bp-prev)
-
-        prev = bp
+    [drfs.append(int(drift_basepoints[bp_id-1]+
+            (drift_basepoints[bp_id]-drift_basepoints[bp_id-1])/2)) 
+            for bp_id in range(1,len(drift_basepoints))]
+    [distances.append(drift_basepoints[bp_id]-drift_basepoints[bp_id-1]) 
+            for bp_id in range(1,len(drift_basepoints))]
 
     stream_basepoints = np.linspace(0, n_samples-1, n_samples).astype(int)
     base_projection_pool = np.random.normal(size=(base_projection_pool_size,
