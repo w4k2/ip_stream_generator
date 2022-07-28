@@ -1,9 +1,9 @@
 import strlearn as sl
 from SemiSynthetic_StreamGenerator import SemiSynthetic_StreamGenerator
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import load_iris
 from sklearn.naive_bayes import GaussianNB
 
-X, y =  load_breast_cancer(return_X_y=True)
+X, y =  load_iris(return_X_y=True)
 
 stream = SemiSynthetic_StreamGenerator(X, y, n_drifts=4, interpolation='cubic')
 

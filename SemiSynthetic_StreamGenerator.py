@@ -112,9 +112,12 @@ class SemiSynthetic_StreamGenerator:
         class_indexes =[]
 
         # Perform random resampling
-        for c in self.classes_:
+        for c_id, c in enumerate(self.classes_):
             ir = len(np.argwhere(self.y==c))/len(self.y)
-            samples = int(np.rint(ir*self.n_samples))
+            if c_id == len(self.classes_)-1:
+                samples = self.n_samples - len(np.concatenate(class_indexes))
+            else:
+                samples = int(np.rint(ir*self.n_samples))
             indexes = np.random.choice(np.argwhere(self.y==c).flatten(), samples)
             class_indexes.append(indexes)
 
@@ -154,8 +157,13 @@ class SemiSynthetic_StreamGenerator:
         proba -= np.min(proba)
         proba /=np.sum(proba)
 
-        base_projections_idx = np.random.choice(range(self.base_projection_pool_size), 
+        try:
+            base_projections_idx = np.random.choice(range(self.base_projection_pool_size), 
                                                 p=proba, 
+                                                replace=False, 
+                                                size=self.n_drifts+1)
+        except:
+            base_projections_idx = np.random.choice(range(self.base_projection_pool_size), 
                                                 replace=False, 
                                                 size=self.n_drifts+1)
 
