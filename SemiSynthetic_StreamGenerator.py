@@ -79,8 +79,6 @@ class SemiSynthetic_StreamGenerator:
         self.base_projection_pool_size = base_projection_pool_size
         self.evaluation_measures=evaluation_measures
 
-        np.random.seed(self.random_state)
-
         self.X_base = np.copy(X)
         self.y_base = np.copy(y)
 
@@ -104,6 +102,7 @@ class SemiSynthetic_StreamGenerator:
                     for bp_id in range(1,len(self.drift_basepoints))]
 
     def _make_stream(self):
+        np.random.seed(self.random_state)
         # Optionally binarize the data
         if self.binarize:
             self.y[self.y!=0] = 1
